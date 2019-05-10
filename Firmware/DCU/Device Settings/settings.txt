@@ -1,0 +1,26 @@
+#ETRT SETTINGS
+#DCU SETTINGS
+#Lines starting with HASH (#) are ignored
+DEBUG:if the settings file is empty thats fine
+#Data log settings - what to log
+setlog quaternion false
+setlog YPR true
+setlog gyro false
+setlog accellerometer false
+setlog magnetometer false
+setlog heading false
+setlog inputs true
+setlog outputs true
+#Data log settings - where to log
+setlog USB false
+setlog UDP false
+setlog SD false
+setlog bluetooth true
+#Set biases for IMU
+#set gyro bias 0,0,0
+#set accel bias 0,0,0
+#set mag bias 0,0,0
+#use for configuring wifi
+#set SSID myssid
+#set set Pass mypassword
+enable bluetooth
