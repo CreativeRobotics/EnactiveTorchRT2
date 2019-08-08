@@ -2,6 +2,7 @@
 #include "ETRT-DCU.h"
 #include "haptics.h"
 #include "src/Drivers/TOFLidarSensor.h"
+//#include "src/Drivers/EZSonar.h"
 //#include "Drivers/GPHaptics.h"
 TOFLidarSensor Sensor;
 
@@ -12,16 +13,24 @@ int delayTime = 10;
 int randomVar = 0;
 bool ledState = HIGH;
 
-bool testMode = true;
 bool printData = false;
 uint8_t ledR = 0, ledG = 0, ledB = 0;
 //bool forceESPBoot = false;
 
-
+int sonarInts;
 void setup() {
   // put your setup code here, to run once:
   //pinMode(PB12, OUTPUT);
   //Start here then the main loop is a state machine
+  
+  //For some reason these need to be here now or it will crash the MCU
+  attachInterrupt(digitalPinToInterrupt(PIN_IMU_INT), imu_isr, FALLING);
+  attachInterrupt(digitalPinToInterrupt(SDCD), cardDetect_isr, CHANGE);
+
+  //SONAR:
+  
+  pinMode(pulsePin, INPUT);
+  attachInterrupt(digitalPinToInterrupt(pulsePin), sonarPulsePin_isr, CHANGE);
   device.deviceState = runStartup();  //Call this until it changes the state
   //device.deviceState = DCU_FINISHED_STARTUP;
   //device.deviceState = DCU_STARTING_SDHC;

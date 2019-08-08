@@ -27,7 +27,7 @@ dcuState_t updateIdle(){
   updateSystem(); //update the core system
   //Check the timer - return if it isn't time for an update
   if(!updateNow()) return device.deviceState;
-  updateUser();
+  updateUser(); //button actions and logging handled in here
   
   if(device.logActive) updateDataLogs();
   return device.deviceState; //this can be set through a command
@@ -37,14 +37,11 @@ dcuState_t updateExperiment(){
   updateSystem();
   //Check the timer - return if it isn't time for an update
   if(!updateNow()) return device.deviceState;
-  updateUser();
+  updateUser(); //button actions and logging handled in here
   
   if(device.logActive) updateDataLogs();
   return device.deviceState; //this can be set through a command
 }
-
-
-
 
 dcuState_t runStartup(){
   //Call this until it changes the state
@@ -56,6 +53,9 @@ dcuState_t runStartup(){
   #ifdef WAIT_FOR_USB
     while(!Serial){;}
   #endif
+  //Serial.println("attaching ...");
+  //attachInterrupt(digitalPinToInterrupt(PIN_IMU_INT), imu_isr, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(SDCD), cardDetect_isr, CHANGE);
   #ifdef WAIT_FOR_BUTTON
     while(device.userButtonChanged == false){
       refreshUserControls();
@@ -78,6 +78,7 @@ dcuState_t runStartup(){
 dcuState_t startSDHC(){
   
   if(device.printStartupState) printOnce("DCU State: Starting SDHC");
+  //delay(100); //removing this caused one device to crash ...?
   setupSDHC();
   return DCU_STARTING_WIRELESS;
 }

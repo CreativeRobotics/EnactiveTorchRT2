@@ -70,11 +70,14 @@ void printDeviceState(serialBuffer_t &sBuff){
   sBuff.port->print("Log USB?:          "); device.logUSB             ? sBuff.port->println("True") : sBuff.port->println("False");
   sBuff.port->print("Log SD?:           "); device.logSD              ? sBuff.port->println("True") : sBuff.port->println("False");
 
+  sBuff.port->print("Sensor:            "); sBuff.port->println(device.sensorName);
+  
   sBuff.port->print("Aux Power:         "); device.v5PowerOn          ? sBuff.port->println("ON") : sBuff.port->println("OFF");
   sBuff.port->print("Usr Switch:        "); device.userSwitchState    ? sBuff.port->println("ON") : sBuff.port->println("OFF");
   sBuff.port->print("Usr Button:        "); device.userButtonState    ? sBuff.port->println("ON") : sBuff.port->println("OFF");
   
   sBuff.port->println();
+  sBuff.port->println(sonarInts);
 }
 
 

@@ -9,6 +9,7 @@
 void setupSDHC(){
   //Set up the command buffer
   //if(DEBUGGING) DEBUG.println("Resetting Buffer");
+  //if(DEBUGGING) delay(100);
   resetBuffer(bufferSD);
   //Set to read from a file instead of serial
   //if(DEBUGGING) DEBUG.println("Set port mode");
@@ -27,13 +28,18 @@ void setupSDHC(){
   }
   //if(DEBUGGING) DEBUG.println("Setting Pins");
   pinMode(SDCD, INPUT_PULLUP);
+  //if(DEBUGGING) DEBUG.println("Setting SDWP");
   //pinMode(SDWP, INPUT_PULLUP);
   pinMode(SDWP, OUTPUT);
+  //if(DEBUGGING) DEBUG.println("Setting SS");
   pinMode(SS, OUTPUT);
+  //if(DEBUGGING) DEBUG.println("Setting SDWP state");
   digitalWrite(SDWP, 0); //SDWP connects to SDCD when a card is inserted.
 
-  attachInterrupt(digitalPinToInterrupt(SDCD), cardDetect_isr, CHANGE);
-  //if(DEBUGGING) DEBUG.println("Checking for card");
+  //if(DEBUGGING) DEBUG.println("Attaching int");
+  //attachInterrupt(digitalPinToInterrupt(SDCD), cardDetect_isr, CHANGE);
+  if(DEBUGGING) DEBUG.println("Checking for card");
+  //delay(100);
   startSD();
   
 }

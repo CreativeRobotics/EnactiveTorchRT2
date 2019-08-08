@@ -3,12 +3,14 @@ void updateUser(){
   //Update function for user editing
   userButtonAction(); //check for activity on the user button
   userSwitchAction(); //check for activity on the user slide switch
-  if(device.userButtonState == true)  mapSensors();
+  if(device.buttonActionToggle && device.buttonActionToggleState) mapSensors();
+  else if(device.userButtonState == true)  mapSensors();
   else noMapSensors();
 }
 
 //Some useful constants for positions in the inut and output arrays:
 #define LIDAR_RANGE       2
+#define SONAR_RANGE       2
 #define VIB0_OUT          0
 #define VIB1_OUT          1
 #define AUDIO0_FREQ       2
@@ -24,9 +26,15 @@ void mapSensors(){
   outputs 2-3 and 4-5 are frequency and amplititude of analog output 0 and 1
   */
   updateInputs(); //copy current sensor values to the inputs array   
-
-  //map TOF lidar range to Vib motor and transducer
-  float range = device.inputs[LIDAR_RANGE];//TOF range
+  float range = 150.0;
+  if(device.sensorType == 0){
+    //SONAR
+    range = device.inputs[SONAR_RANGE];//TOF range
+  }
+  else{
+    //map TOF lidar range to Vib motor and transducer
+    range = device.inputs[LIDAR_RANGE];//TOF range
+  }
   if(range > 150.0) range = 150.0;
   float vibIntensity = (150-range) * 0.0067;
   if(vibIntensity > 1.0) vibIntensity = 1.0;
@@ -63,12 +71,25 @@ void userSwitchAction(){
 void userButtonAction(){
   if(!device.userButtonChanged) return;
   device.userButtonChanged = false;
-  if(device.userButtonState)        buttonOnAction();
+  if(device.buttonActionToggle) buttonToggle();
+  else if(device.userButtonState)  buttonOnAction();
   else if(!device.userButtonState) buttonOffAction();
+}
+
+void buttonToggle(){
+  if(!device.userButtonState) return; //if switch released, do nothing
+  device.buttonActionToggleState = !device.buttonActionToggleState;
+  if(!device.buttonActionToggleState) buttonOffAction(); //turn off
+  else buttonOnAction(); //turn on
+  if(DEBUGGING) {
+    DEBUG.print("Button Toggle ");
+    device.buttonActionToggleState ? DEBUG.println("TON") : DEBUG.println("TOFF");
+  }
+  return;
 }
 //===============================================================================================
 void buttonOnAction(){
-  setLEDs(redLED);
+  setLEDs(blueLED);
   if(device.buttonEnableHaptics){
     //testHapticsStart();
     enableAudio();

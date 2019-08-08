@@ -1,12 +1,12 @@
 
 uint8_t detectSensorType(){
   //ADC1 can be tied to GND PB04
-  //ADC3 can be tied to GND PB04
+  //ADC3 can be tied to GND PB06
   //Set ADC1 to input pullup, then check state.
   //If high then you have a LIDAR
   //If low then you have Sonar
   uint8_t retVal = 0;
-  pinMode(PB04, INPUT_PULLUP);
+  pinMode(PB04, INPUT_PULLUP); //ADC1
   delay(1);
   if(digitalRead(PB04)) bitSet(retVal, 0);
   return retVal;
@@ -26,18 +26,27 @@ void initOutputModule(){
 
 void updateIO(){
   
-  updateTOFSensor();
+  if(device.sensorType == 1) updateTOFSensor();
+  else if(device.sensorType == 0){
+    updateSonar(); //put whatever init function for whatever sensor module is in use here
+  }
   //updateInputs(); //copy sensor data to DCU
   updateHaptics();
 }
 
 void updateInputs(){
-  device.inputs[0] = Sensor.getRange();
-  device.inputs[1] = Sensor.getDelta();
-  device.inputs[2] = Sensor.getTOFRange();
-  device.inputs[3] = Sensor.getTOFDelta();
-  device.inputs[4] = Sensor.getAuxRange();
-  device.inputs[5] = Sensor.getAuxDelta();
+  if(device.sensorType == 1){
+      device.inputs[0] = Sensor.getRange();
+    device.inputs[1] = Sensor.getDelta();
+    device.inputs[2] = Sensor.getTOFRange();
+    device.inputs[3] = Sensor.getTOFDelta();
+    device.inputs[4] = Sensor.getAuxRange();
+    device.inputs[5] = Sensor.getAuxDelta();
+  }else if(device.sensorType == 0){
+    device.inputs[2] = getSonarRange();
+  }
+  
+  
 }
 
 

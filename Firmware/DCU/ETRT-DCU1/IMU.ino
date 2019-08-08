@@ -23,7 +23,8 @@ unsigned short fifoRate = DMP_SAMPLE_RATE;
 bool initIMU(void){
   // imu.begin() should return 0 on success. Will initialize
   // I2C bus, and reset MPU-9250 to defaults.
-  attachInterrupt(digitalPinToInterrupt(PIN_IMU_INT), imu_isr, FALLING);
+  //attachInterrupt(digitalPinToInterrupt(PIN_IMU_INT), imu_isr, FALLING);
+  //attachInterrupt(PIN_IMU_INT, imu_isr, FALLING);
   if(imu.begin() != INV_SUCCESS) {
     if(DEBUGGING) DEBUG.println("INIT Fail Unable to communicate with MPU-9250");
     //device.IMU_Enabled = false;
@@ -144,7 +145,7 @@ bool collectIMUCalibrationData(){
 void updateIMU(){
   if(device.IMU_Enabled == false) return;
 // Check for new data in the FIFO imu.fifoAvailable()
-  if ( device.IMU_Interrupted){
+  if ( imu.fifoAvailable() || device.IMU_Interrupted ){
     device.IMU_Interrupted = false;
     if ( imu.dmpUpdateFifo() == INV_SUCCESS) processIMUData();
     else if(DEBUGGING) DEBUG.println("DEBUG: Failed to read IMU");

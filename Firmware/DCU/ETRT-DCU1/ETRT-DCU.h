@@ -73,7 +73,7 @@ const uint8_t yellowLED[3] = {200,200,0};
 //Data Capture Unit Settings
 typedef struct dcuSettings_t{
 	int data1;
-  const String DCU_FW_VERSION = "1.0.0 ALPHA";
+  const String DCU_FW_VERSION = "1.0.1 BETA";
   long gyroBias[3];
   long accelBias[3];
   long magBias[3];
@@ -211,6 +211,8 @@ typedef struct dcuData_t{
   //Button Actions:
   bool buttonEnableHaptics = true; //map sensors to haptics when button pressed
   bool buttonStartLog = true; //Log data when button pressed - Streams data over enabled ports and if SD logging enabled, starts a log file, stops when button released
+  bool buttonActionToggle = true; //button actions toggle on and off when pressed, rather than only being active when the button is pressed
+  bool buttonActionToggleState = false; //track the toggle state
   //SDCard
   File dataLogFile;
   String dataLogFilename;
@@ -276,6 +278,15 @@ dataLog_t logBuffer;
 SamRTC Clock;
 
 
+//TEMP SONAR VARIABLES - Int crash problem
+unsigned long pulseLength = 0;
+unsigned long riseTime = 0;
+
+const int pulsePin = PB05; //A2
+//const int enPin;
+float range = 0.0;
+
+//---------------------------------
 dcuSettings_t settings;
 dcuData_t device;
 wifiSettings_t wifiSettings;

@@ -45,7 +45,7 @@ const commander_t commands[] = {
   {"ESP Boot",          espBootloaderMode,  "Set the ESP32 to bootloader mode"}, //go into bootloader and disable UART
   {"ESP RESET",         espReset,           "Reset the ESP32"}, //restart ESP32 and UART
   {"ESP Status:",       espStatusMessage,   "An ESP32 WiFi module Status message"}, //Status message from ESP
-  {"ESP Get:",          espSendClientData,  "Marks HTML data sent to the WiFI module for it to sent to a client"},  //get an HTTP page
+  {"ESPGet:",           espSendClientData,  "Marks HTML data sent to the WiFI module for it to sent to a client"},  //get an HTTP page
   {"ESPTelnet:",        espSendTelnetData,  "Marks data as coming from a Telnet client"},  //
   {"ESP:",              espSendCommand,     "Route the command to the ESP32 WiFi Module"}, //route a command to the ESP module  
   {"testSD",            testSD,             "Test the SD by opening, writing and closing a file"},
@@ -91,6 +91,8 @@ bool buttonActionSet( serialBuffer_t &sBuff){
     device.buttonEnableHaptics = containsTrue;
   }else if(subStr.indexOf("enable log") != -1){
     device.buttonStartLog = containsTrue;
+  }else if(subStr.indexOf("enable toggle") != -1){
+    device.buttonActionToggle = containsTrue;
   }
   return 0;
 }
@@ -162,6 +164,7 @@ bool printSDDirectory( serialBuffer_t &sBuff){
 }
 bool getLogHeader( serialBuffer_t &sBuff){
   sBuff.port->println(getLogHeader());
+  sBuff.port->println(getLogColumns());
   return 0;
 }
 bool setloglist( serialBuffer_t &sBuff){
